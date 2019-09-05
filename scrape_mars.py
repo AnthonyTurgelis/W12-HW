@@ -39,7 +39,7 @@ def scrape():
 	fig_id = footer.find('a')['data-link']
 	fig_id = fig_id.split("=")[1]
 	featured_image_url = 'https://www.jpl.nasa.gov/spaceimages/images/largesize/' + fig_id + '_ip.jpg'
-	data["featured_image_url"]
+	data["featured_image_url"] = featured_image_url
 	url = "https://twitter.com/marswxreport?lang=en"
 	browser.visit(url)
 	html = browser.html

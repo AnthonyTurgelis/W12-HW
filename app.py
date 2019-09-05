@@ -3,20 +3,14 @@ from flask import Flask, render_template, redirect
 from flask_pymongo import PyMongo
 import scrape_mars
 from bs4 import BeautifulSoup
-import requests
-import pymongo
 from splinter import Browser
 from splinter.exceptions import ElementDoesNotExist
 from selenium.common.exceptions import ElementNotVisibleException
 import json
 
 app = Flask(__name__)
-
-mongo = PyMongo(app, uri="mongodb://localhost:27017/Scrape.mars")
-
-# setup mongo connection
-
-# connect to mongo db and collection
+app.config["MONGO_URI"] = "mongodb://localhost:27017/Scrape.mars"
+mongo = PyMongo(app)
 
 
 @app.route("/")
@@ -30,9 +24,19 @@ def index():
 @app.route("/scrape")
 def scrape():
     mars = mongo.db.mars
-    scrape_data = scrape_mars.scrape()
+    data = scrape_mars.scrape()
     mars.update({}, data, upsert=True)
-    return redirect("/")
+    return redirect("/", code=302)
+
+@app.route("/err")
+def bad():
+    return 1.234
+
+@app.route("/debugged")
+def debugged():
+    resp = 1.234
+    assert isinstance(resp,str), 'response must be string'
+    return resp
 
 if __name__ == "__main__":
     app.run(debug=True)
